@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planeta rebelde</title>
+    <link rel="stylesheet" href="Estilos.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <script src="script.js" defer></script>
+</head>
+<body id="inicio" data-page="inicio">
+    <div class="site-shell">
+        <header class="cabecera">
+            <div class="barra-superior animar">
+                <div class="marca">
+                    <h1>Planeta rebelde</h1>
+                    <p>Asociacion creativa para compartir, aprender y pasarlo bien.</p>
+                </div>
+                <a class="boton-admin" href="admin.html">Panel admin</a>
+            </div>
+
+            <nav id="menu" class="animar">
+                <a class="activo" href="Página principal.html">Inicio</a>
+                <a href="noticias.html">Noticias</a>
+                <a href="juegos.html">Juegos</a>
+                <a href="aprende.html">Aprende</a>
+                <a href="sobre-nosotros.html">Sobre nosotros</a>
+                <a href="redes-sociales.html">Redes sociales</a>
+            </nav>
+        </header>
+
+        <main class="contenido">
+            <section class="hero">
+                <article class="panel hero-principal animar">
+                    <span class="etiqueta">Bienvenida</span>
+                    <h2>Bienvenidos a nuestra asociacion Planeta rebelde.</h2>
+                    <p>Hemos preparado este espacio para reunir noticias, juegos, aprendizaje y contenido creativo en un solo lugar. Queremos que la web se sienta viva, cercana y facil de actualizar por nuestro equipo.</p>
+                    <div class="botones-hero">
+                        <a class="boton-principal" href="noticias.html">Ver noticias</a>
+                        <a class="boton-secundario" href="aprende.html">Ir a aprende</a>
+                    </div>
+                </article>
+
+                <aside class="panel mini-estadisticas animar">
+                    <div class="dato">
+                        <strong>4</strong>
+                        <span>Admins preparados para actualizar la web.</span>
+                    </div>
+                    <div class="dato">
+                        <strong>1</strong>
+                        <span>Panel de administracion para publicar videos y contenido.</span>
+                    </div>
+                    <div class="dato">
+                        <strong>6</strong>
+                        <span>Secciones principales para explorar Planeta rebelde.</span>
+                    </div>
+                </aside>
+            </section>
+
+            <section class="seccion">
+                <div class="seccion-titulo animar">
+                    <h2>Que puedes encontrar aqui</h2>
+                    <p>La portada ahora presenta mejor la asociacion y sirve de punto de entrada a todas las areas de la web.</p>
+                </div>
+
+                <div class="grid-destacados">
+                    <article class="tarjeta animar">
+                        <span class="etiqueta">Noticias</span>
+                        <h3>Novedades del proyecto</h3>
+                        <p>Comparte anuncios, eventos, avances y mensajes importantes con toda la comunidad.</p>
+                    </article>
+
+                    <article class="tarjeta animar">
+                        <span class="etiqueta">Juegos</span>
+                        <h3>Espacio divertido</h3>
+                        <p>Reserva esta zona para retos, dinamicas, propuestas creativas o enlaces a juegos.</p>
+                    </article>
+
+                    <article class="tarjeta animar">
+                        <span class="etiqueta">Aprende</span>
+                        <h3>Contenido util</h3>
+                        <p>Publica guias, ideas, curiosidades y recursos para aprender juntos dentro de la asociacion.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="seccion">
+                <div class="seccion-titulo animar">
+                    <h2>Publicaciones del equipo</h2>
+                    <p>Todo lo que publiquen los administradores en la seccion de inicio aparecera aqui automaticamente.</p>
+                </div>
+
+                <div class="publicaciones-grid" data-render-content="inicio"></div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
