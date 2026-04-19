@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprende | Planeta rebelde</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js" defer></script>
+</head>
+<body id="inicio" data-page="aprende">
+    <div class="site-shell">
+        <header class="cabecera">
+            <div class="barra-superior animar">
+                <div class="marca">
+                    <h1>Aprende</h1>
+                    <p>Un espacio para compartir ideas, recursos y conocimiento.</p>
+                </div>
+                <a class="boton-admin" href="admin.html">Panel admin</a>
+            </div>
+
+            <nav id="menu" class="animar">
+                <a href="index.html">Inicio</a>
+                <a href="noticias.html">Noticias</a>
+                <a href="juegos.html">Juegos</a>
+                <a class="activo" href="aprende.html">Aprende</a>
+                <a href="sobre-nosotros.html">Sobre nosotros</a>
+                <a href="redes-sociales.html">Redes sociales</a>
+            </nav>
+        </header>
+
+        <main class="contenido">
+            <section class="panel animar">
+                <span class="etiqueta">Aprendizaje</span>
+                <h2>Recursos para seguir creciendo</h2>
+                <p class="texto-apoyo">Aqui podeis reunir tutoriales, recursos, materiales, presentaciones y cualquier contenido util para aprender juntos.</p>
+            </section>
+
+            <section class="seccion">
+                <div class="publicaciones-grid" data-render-content="aprende"></div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
