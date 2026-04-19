@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre nosotros | Planeta rebelde</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js" defer></script>
+</head>
+<body id="inicio" data-page="sobre-nosotros">
+    <div class="site-shell">
+        <header class="cabecera">
+            <div class="barra-superior animar">
+                <div class="marca">
+                    <h1>Sobre nosotros</h1>
+                    <p>Conoce la historia, la energia y la gente que impulsa Planeta rebelde.</p>
+                </div>
+                <a class="boton-admin" href="admin.html">Panel admin</a>
+            </div>
+
+            <nav id="menu" class="animar">
+                <a href="index.html">Inicio</a>
+                <a href="noticias.html">Noticias</a>
+                <a href="juegos.html">Juegos</a>
+                <a href="aprende.html">Aprende</a>
+                <a class="activo" href="sobre-nosotros.html">Sobre nosotros</a>
+                <a href="redes-sociales.html">Redes sociales</a>
+            </nav>
+        </header>
+
+        <main class="contenido">
+            <section class="panel animar">
+                <span class="etiqueta">Identidad</span>
+                <h2>Una asociacion con ganas de compartir</h2>
+                <p class="texto-apoyo">Planeta rebelde puede usar esta pagina para contar su historia, sus valores y la gente que da vida al proyecto. Tambien podeis anadir publicaciones internas o presentaciones del equipo desde el panel admin.</p>
+            </section>
+
+            <section class="seccion">
+                <div class="publicaciones-grid" data-render-content="sobre-nosotros"></div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
