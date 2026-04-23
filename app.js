@@ -241,6 +241,95 @@ function saveStoredItems(items) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
 }
 
+// ── Supabase: publicaciones ──────────────────────────────────────────────────
+
+async function getSupabaseItems(section) {
+    if (!supabaseClient) return [];
+    try {
+        let query = supabaseClient
+            .from("publicaciones")
+            .select("*")
+            .order("created_at", { ascending: false });
+        if (section) query = query.eq("section", section);
+        const { data, error } = await query;
+        if (error) throw error;
+        return (data || []).map(normalizeSupabaseItem);
+    } catch (e) {
+        console.error("[Supabase] getSupabaseItems:", e);
+        return [];
+    }
+}
+
+async function getAllSupabaseItems() {
+    return getSupabaseItems(null);
+}
+
+function normalizeSupabaseItem(row) {
+    return {
+        id: row.id,
+        section: row.section,
+        type: row.type,
+        title: row.title,
+        description: row.description || "",
+        mediaUrl: row.media_url || "",
+        mediaBlobId: "",
+        mediaFileName: "",
+        mediaMimeType: "",
+        actionUrl: row.action_url || "",
+        actionLabel: row.action_label || "",
+        authorName: row.author_name || "admin",
+        createdAt: row.created_at,
+        _fromSupabase: true
+    };
+}
+
+async function saveSupabaseItem(item) {
+    if (!supabaseClient) throw new Error("Sin conexion a Supabase.");
+    const { error } = await supabaseClient.from("publicaciones").insert({
+        id: item.id,
+        section: item.section,
+        type: item.type,
+        title: item.title,
+        description: item.description || null,
+        media_url: item.mediaUrl || null,
+        action_url: item.actionUrl || null,
+        action_label: item.actionLabel || null,
+        author_name: item.authorName || "admin"
+    });
+    if (error) throw error;
+}
+
+async function deleteSupabaseItem(itemId) {
+    if (!supabaseClient) throw new Error("Sin conexion a Supabase.");
+    const { data } = await supabaseClient
+        .from("publicaciones")
+        .select("media_url")
+        .eq("id", itemId)
+        .single();
+    if (data?.media_url && data.media_url.includes("/storage/v1/object/public/media/")) {
+        const filePath = data.media_url.split("/storage/v1/object/public/media/")[1];
+        await supabaseClient.storage.from("media").remove([filePath]).catch(() => {});
+    }
+    const { error } = await supabaseClient.from("publicaciones").delete().eq("id", itemId);
+    if (error) throw error;
+}
+
+async function uploadFileToSupabase(file, folder) {
+    if (!supabaseClient) throw new Error("Sin conexion a Supabase.");
+    const ext = file.name.split(".").pop();
+    const fileName = `${folder}/${createId()}.${ext}`;
+    const { error } = await supabaseClient.storage.from("media").upload(fileName, file, {
+        cacheControl: "3600",
+        upsert: false,
+        contentType: file.type
+    });
+    if (error) throw error;
+    const { data: urlData } = supabaseClient.storage.from("media").getPublicUrl(fileName);
+    return urlData.publicUrl;
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+
 function getOnboardingData() {
     try {
         const raw = localStorage.getItem(ONBOARDING_KEY);
@@ -1906,6 +1995,7 @@ async function initAdminPage() {
         }
 
         let mediaBlobId = "";
+        let finalMediaUrl = mediaUrl;
 
         if (uploadedFile) {
             if (type === "video" && !uploadedFile.type.startsWith("video/")) {
@@ -1918,11 +2008,21 @@ async function initAdminPage() {
                 return;
             }
 
-            try {
-                mediaBlobId = await saveMediaFile(uploadedFile);
-            } catch (saveError) {
-                showStatus(statusBox, "error", "No se ha podido guardar el archivo local en este navegador.");
-                return;
+            if (supabaseClient) {
+                try {
+                    showStatus(statusBox, "ok", "Subiendo archivo...");
+                    finalMediaUrl = await uploadFileToSupabase(uploadedFile, "publicaciones");
+                } catch (uploadError) {
+                    showStatus(statusBox, "error", "No se pudo subir el archivo: " + (uploadError.message || "error desconocido"));
+                    return;
+                }
+            } else {
+                try {
+                    mediaBlobId = await saveMediaFile(uploadedFile);
+                } catch (saveError) {
+                    showStatus(statusBox, "error", "No se ha podido guardar el archivo local en este navegador.");
+                    return;
+                }
             }
         }
 
@@ -1932,7 +2032,7 @@ async function initAdminPage() {
             type,
             title,
             description,
-            mediaUrl,
+            mediaUrl: finalMediaUrl,
             mediaBlobId,
             mediaFileName: uploadedFile ? uploadedFile.name : "",
             mediaMimeType: uploadedFile ? uploadedFile.type : "",
@@ -1944,15 +2044,18 @@ async function initAdminPage() {
         };
 
         try {
-            const items = getStoredItems();
-            items.push(newItem);
-            saveStoredItems(items);
+            if (supabaseClient) {
+                await saveSupabaseItem(newItem);
+            } else {
+                const items = getStoredItems();
+                items.push(newItem);
+                saveStoredItems(items);
+            }
         } catch (saveError) {
             if (mediaBlobId) {
                 await deleteMediaFile(mediaBlobId).catch(() => {});
             }
-
-            showStatus(statusBox, "error", "No se ha podido guardar la publicacion.");
+            showStatus(statusBox, "error", "No se ha podido guardar la publicacion: " + (saveError.message || ""));
             return;
         }
 
@@ -2048,15 +2151,18 @@ async function initAdminPage() {
         }
 
         const itemId = button.dataset.deleteId;
-        const items = getStoredItems();
-        const selectedItem = items.find((item) => item.id === itemId);
-        const nextItems = items.filter((item) => item.id !== itemId);
 
         try {
-            saveStoredItems(nextItems);
-
-            if (selectedItem?.mediaBlobId) {
-                await deleteMediaFile(selectedItem.mediaBlobId).catch(() => {});
+            if (supabaseClient) {
+                await deleteSupabaseItem(itemId);
+            } else {
+                const items = getStoredItems();
+                const selectedItem = items.find((item) => item.id === itemId);
+                const nextItems = items.filter((item) => item.id !== itemId);
+                saveStoredItems(nextItems);
+                if (selectedItem?.mediaBlobId) {
+                    await deleteMediaFile(selectedItem.mediaBlobId).catch(() => {});
+                }
             }
         } catch (deleteError) {
             showStatus(statusBox, "error", "No se ha podido eliminar la publicacion.");
@@ -2325,9 +2431,16 @@ async function renderDynamicContent() {
 
     for (const container of containers) {
         const section = container.dataset.renderContent;
-        const items = getStoredItems()
-            .filter((item) => item.section === section)
-            .sort((first, second) => new Date(second.createdAt) - new Date(first.createdAt));
+
+        let items = [];
+        if (supabaseClient) {
+            items = await getSupabaseItems(section);
+        }
+        if (!items.length) {
+            items = getStoredItems()
+                .filter((item) => item.section === section)
+                .sort((first, second) => new Date(second.createdAt) - new Date(first.createdAt));
+        }
 
         container.innerHTML = "";
 
@@ -2595,8 +2708,16 @@ function formatCalendarDate(dateText) {
 }
 
 function renderAdminItems(container) {
-    const items = getStoredItems()
-        .sort((first, second) => new Date(second.createdAt) - new Date(first.createdAt));
+    if (supabaseClient) {
+        getAllSupabaseItems().then((items) => _renderAdminItemsList(container, items));
+    } else {
+        const items = getStoredItems()
+            .sort((first, second) => new Date(second.createdAt) - new Date(first.createdAt));
+        _renderAdminItemsList(container, items);
+    }
+}
+
+function _renderAdminItemsList(container, items) {
 
     container.innerHTML = "";
 
