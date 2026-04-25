@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel admin | Planeta rebelde</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js" defer></script>
+</head>
+<body id="inicio" data-page="admin" class="auth-pending">
+    <div class="site-shell">
+        <header class="cabecera">
+            <div class="barra-superior animar">
+                <div class="marca">
+                    <h1>Panel admin</h1>
+                    <p>Zona interna para publicar contenido en la web. Version 1.2.</p>
+                </div>
+                <a class="boton-admin" href="index.html">Volver al inicio</a>
+            </div>
+
+            <nav id="menu" class="animar">
+                <a href="index.html">Inicio</a>
+                <a href="noticias.html">Noticias</a>
+                <a href="juegos.html">Juegos</a>
+                <a href="aprende.html">Aprende</a>
+                <a href="sobre-nosotros.html">Sobre nosotros</a>
+                <a href="redes-sociales.html">Redes sociales</a>
+            </nav>
+        </header>
+
+        <main class="contenido">
+            <section class="admin-layout">
+                <div class="admin-paneles">
+                    <article class="panel animar">
+                        <span class="etiqueta">Sesion activa</span>
+                        <h2>Hola, <span id="session-name">admin</span></h2>
+                        <p class="ayuda-admin">Si la sesion no existe o la cuenta no pertenece a un admin autorizado, esta pagina te redirige automaticamente a <code>index.html</code>.</p>
+                        <p id="session-email" class="meta"></p>
+                        <div class="fila-botones">
+                            <button id="logout-button" class="boton-secundario-linea" type="button">Cerrar sesion</button>
+                        </div>
+                    </article>
+
+                    <article class="panel animar">
+                        <span class="etiqueta">Ayuda</span>
+                        <h2>Como publicar</h2>
+                        <p class="ayuda-admin">Puedes pegar una URL, publicar videos o fotos, o subir archivos desde tu ordenador. Los archivos locales siguen guardandose solo en este navegador.</p>
+                        <p class="meta">Version 1.2 con biblioteca para imagen diaria, fotos y mejoras de configuracion.</p>
+                    </article>
+                </div>
+
+                <div class="panel animar">
+                    <span class="etiqueta">Publicar</span>
+                    <h2>Crear contenido nuevo</h2>
+                    <p class="ayuda-admin">Completa los campos y guarda la publicacion. Ahora tambien puedes publicar fotos ademas de videos, enlaces y texto.</p>
+
+                    <div id="admin-status" class="estado ok">Comprobando sesion...</div>
+
+                    <form id="publish-form" class="formulario">
+                        <div class="campo">
+                            <label for="content-section">Seccion</label>
+                            <select id="content-section" name="section">
+                                <option value="inicio">Inicio</option>
+                                <option value="noticias">Noticias</option>
+                                <option value="juegos">Juegos</option>
+                                <option value="aprende">Aprende</option>
+                                <option value="sobre-nosotros">Sobre nosotros</option>
+                                <option value="redes-sociales">Redes sociales</option>
+                            </select>
+                        </div>
+
+                        <div class="campo">
+                            <label for="content-type">Tipo de contenido</label>
+                            <select id="content-type" name="type">
+                                <option value="texto">Texto</option>
+                                <option value="video">Video</option>
+                                <option value="foto">Foto</option>
+                                <option value="enlace">Enlace</option>
+                            </select>
+                        </div>
+
+                        <div class="campo">
+                            <label for="content-title">Titulo</label>
+                            <input id="content-title" name="title" type="text" placeholder="Escribe un titulo claro">
+                        </div>
+
+                        <div class="campo">
+                            <label for="content-description">Descripcion</label>
+                            <textarea id="content-description" name="description" placeholder="Escribe el texto que quieres mostrar"></textarea>
+                        </div>
+
+                        <div id="media-field" class="campo">
+                            <label for="content-media-url">URL del video</label>
+                            <input id="content-media-url" name="mediaUrl" type="url" placeholder="https://...">
+                        </div>
+
+                        <div id="file-field" class="campo">
+                            <label for="content-media-file">Video desde tu ordenador</label>
+                            <input id="content-media-file" name="mediaFile" type="file" accept="video/*">
+                            <p class="upload-note">Puedes usar una URL o subir un archivo. Si subes un archivo, la web lo guardara solo en este navegador.</p>
+                        </div>
+
+                        <div id="action-field" class="campo">
+                            <label for="content-action-url">URL del boton</label>
+                            <input id="content-action-url" name="actionUrl" type="url" placeholder="https://...">
+                        </div>
+
+                        <div id="action-label-field" class="campo">
+                            <label for="content-action-label">Texto del boton</label>
+                            <input id="content-action-label" name="actionLabel" type="text" placeholder="Ejemplo: Ver mas">
+                        </div>
+
+                        <div class="fila-botones">
+                            <button class="boton-accion" type="submit">Publicar ahora</button>
+                        </div>
+                    </form>
+
+                    <section class="seccion">
+                        <div class="seccion-titulo">
+                            <h2>Publicaciones creadas</h2>
+                            <p>Puedes revisar aqui todo lo que se ha publicado desde este navegador y borrar lo que ya no quieras mostrar.</p>
+                        </div>
+                        <div id="admin-items" class="lista-admin"></div>
+                    </section>
+
+                    <section class="seccion">
+                        <div class="seccion-titulo">
+                            <h2>Biblioteca de imagen diaria</h2>
+                            <p>Guarda aqui las imagenes del fondo diario. Si pones una fecha fija, saldra ese dia. Si la dejas vacia, la web ira rotando automaticamente.</p>
+                        </div>
+
+                        <div id="daily-image-status" class="estado ok">Prepara una imagen para la biblioteca diaria.</div>
+
+                        <form id="daily-image-form" class="formulario">
+                            <div class="campo">
+                                <label for="daily-image-title">Titulo</label>
+                                <input id="daily-image-title" name="title" type="text" placeholder="Ejemplo: Portada del dia">
+                            </div>
+
+                            <div class="campo">
+                                <label for="daily-image-description">Descripcion</label>
+                                <textarea id="daily-image-description" name="description" placeholder="Opcional: un texto breve para recordar que imagen es"></textarea>
+                            </div>
+
+                            <div class="campo">
+                                <label for="daily-image-date">Fecha fija</label>
+                                <input id="daily-image-date" name="date" type="date">
+                            </div>
+
+                            <div class="campo">
+                                <label for="daily-image-url">URL de la imagen</label>
+                                <input id="daily-image-url" name="mediaUrl" type="url" placeholder="https://...">
+                            </div>
+
+                            <div class="campo">
+                                <label for="daily-image-file">Imagen desde tu ordenador</label>
+                                <input id="daily-image-file" name="mediaFile" type="file" accept="image/*">
+                                <p class="upload-note">Puedes usar una URL o subir una imagen. Si subes un archivo, se guardara en este navegador dentro de la biblioteca diaria.</p>
+                            </div>
+
+                            <div class="fila-botones">
+                                <button class="boton-accion" type="submit">Guardar en imagen diaria</button>
+                            </div>
+                        </form>
+
+                        <div id="daily-image-items" class="lista-admin"></div>
+                    </section>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
