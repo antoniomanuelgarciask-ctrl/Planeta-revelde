@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Museo | Planeta rebelde</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <script src="app.js" defer></script>
+</head>
+<body id="inicio" data-page="museo">
+    <div class="site-shell">
+        <header class="cabecera">
+            <div class="barra-superior animar">
+                <div class="marca marca-con-logo">
+                    <img class="logo-planeta" src="logo-planeta-rebelde.svg" alt="Logo de Planeta rebelde">
+                    <div>
+                        <h1>Museo</h1>
+                        <p>Modelos 3D del espacio para mover con el dedo o el cursor.</p>
+                    </div>
+                </div>
+                <a class="boton-admin" href="admin.html">Panel admin</a>
+            </div>
+
+            <nav id="menu" class="animar">
+                <a href="index.html">Inicio</a>
+                <a class="activo" href="museo.html">Museo</a>
+                <a href="eventos.html">Eventos</a>
+                <a href="noticias.html">Noticias</a>
+                <a href="juegos.html">Juegos</a>
+                <a href="aprende.html">Aprende</a>
+                <a href="sobre-nosotros.html">Sobre nosotros</a>
+                <a href="redes-sociales.html">Redes sociales</a>
+            </nav>
+        </header>
+
+        <main class="contenido">
+            <section class="panel animar">
+                <span class="etiqueta">Modelos 3D</span>
+                <h2>Museo interactivo</h2>
+                <p class="texto-apoyo">Todo lo que se publique en esta seccion desde el panel admin con tipo <strong>Modelo 3D</strong> aparecera aqui. Los modelos giran solos y el usuario los puede mover con el dedo o el cursor.</p>
+            </section>
+
+            <section class="seccion">
+                <div class="seccion-titulo animar">
+                    <h2>Piezas del museo</h2>
+                    <p>Subid archivos 3D desde el panel admin para ir llenando esta galeria espacial.</p>
+                </div>
+
+                <div class="publicaciones-grid" data-render-content="museo"></div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

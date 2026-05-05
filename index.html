@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planeta rebelde</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js" defer></script>
+</head>
+<body id="inicio" data-page="index">
+    <div id="onboarding-modal" class="onboarding-modal oculto" aria-hidden="true">
+        <div class="onboarding-card">
+            <span class="etiqueta">Primera visita</span>
+            <h2>Personaliza tu bienvenida</h2>
+            <p>Cuentanos como quieres vivir la web desde este navegador. Si prefieres, puedes saltar este paso y cambiarlo luego desde configuracion.</p>
+
+            <div class="onboarding-admin-entry">
+                <button id="onboarding-admin-toggle" class="boton-admin-inline" type="button">Eres administrador? Pulsa aqui</button>
+                <p class="onboarding-admin-note">Abriremos un acceso rapido para iniciar sesion y ver herramientas exclusivas del equipo.</p>
+            </div>
+
+            <section id="onboarding-admin-panel" class="onboarding-admin-panel oculto" aria-live="polite">
+                <span class="etiqueta">Zona admin</span>
+                <h3>Acceso rapido para administradores</h3>
+                <p class="ayuda-admin">Solo las cuentas admin autorizadas pueden usar este acceso. Inicia sesion con tu cuenta de Supabase.</p>
+
+                <div class="onboarding-admin-benefits">
+                    <div class="onboarding-admin-benefit">Entrar al panel interno protegido.</div>
+                    <div class="onboarding-admin-benefit">Publicar contenido y revisarlo rapidamente.</div>
+                    <div class="onboarding-admin-benefit">Cerrar la bienvenida y seguir con acceso de administrador.</div>
+                </div>
+
+                <div id="onboarding-admin-login" class="onboarding-admin-block">
+                    <div id="onboarding-auth-status" class="estado ok">Accede con tu email y contrasena de Supabase.</div>
+
+                    <form id="onboarding-admin-form" class="formulario">
+                        <div class="campo">
+                            <label for="onboarding-admin-email">Email</label>
+                            <input id="onboarding-admin-email" name="email" type="email" autocomplete="email" placeholder="admin@planetarebelde.com">
+                        </div>
+
+                        <div class="campo">
+                            <label for="onboarding-admin-password">Contrasena</label>
+                            <input id="onboarding-admin-password" name="password" type="password" autocomplete="current-password" placeholder="Tu contrasena de Supabase">
+                        </div>
+
+                        <div class="fila-botones">
+                            <button class="boton-accion" type="submit">Iniciar sesion</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="onboarding-admin-tools" class="onboarding-admin-block oculto">
+                    <p class="meta" id="onboarding-auth-email"></p>
+                    <div class="fila-botones">
+                        <a class="boton-accion" href="admin.html">Entrar al panel admin</a>
+                        <button id="onboarding-admin-dismiss" class="boton-secundario-linea" type="button">Saltar bienvenida</button>
+                        <button id="onboarding-admin-logout" class="boton-secundario-linea" type="button">Cerrar sesion</button>
+                    </div>
+                </div>
+            </section>
+
+            <form id="onboarding-form" class="formulario">
+                <div class="campo">
+                    <label for="visitor-name">Nombre</label>
+                    <input id="visitor-name" name="visitorName" type="text" placeholder="Escribe tu nombre">
+                </div>
+
+                <fieldset class="campo color-selector">
+                    <legend>Color de preferencia</legend>
+                    <div class="color-options">
+                        <label class="color-chip">
+                            <input type="radio" name="favoriteColor" value="amarillo">
+                            <span>Amarillo</span>
+                        </label>
+                        <label class="color-chip">
+                            <input type="radio" name="favoriteColor" value="blanco">
+                            <span>Blanco</span>
+                        </label>
+                        <label class="color-chip">
+                            <input type="radio" name="favoriteColor" value="azul">
+                            <span>Azul</span>
+                        </label>
+                        <label class="color-chip">
+                            <input type="radio" name="favoriteColor" value="verde">
+                            <span>Verde</span>
+                        </label>
+                    </div>
+                </fieldset>
+
+                <div class="fila-botones">
+                    <button class="boton-accion" type="submit">Guardar y continuar</button>
+                    <button id="onboarding-skip" class="boton-secundario-linea" type="button">Saltar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="user-auth-modal" class="onboarding-modal oculto" aria-hidden="true">
+        <div class="onboarding-card auth-card">
+            <div class="release-notes-topline">
+                <span class="etiqueta">Cuenta</span>
+                <span class="version-pill version-pill-light">Supabase</span>
+            </div>
+            <h2>Entra o crea tu cuenta</h2>
+            <p>Los usuarios normales se guardan en Supabase para que puedan entrar desde cualquier dispositivo y mantener comentarios, likes y personalizacion.</p>
+
+            <div class="auth-switcher">
+                <button class="boton-accion activo" type="button" data-auth-view="login">Iniciar sesion</button>
+                <button class="boton-secundario-linea" type="button" data-auth-view="register">Registrarse</button>
+            </div>
+
+            <div id="user-auth-status" class="estado ok">Usa tu nombre de usuario y contrasena.</div>
+
+            <div id="user-session-panel" class="formulario oculto">
+                <div class="panel">
+                    <strong id="user-session-panel-name">Sesion iniciada</strong>
+                    <p id="user-session-panel-text">Tu cuenta esta conectada.</p>
+                </div>
+                <div class="fila-botones">
+                    <button id="user-logout-button" class="boton-secundario-linea" type="button">Cerrar sesion</button>
+                    <button class="boton-accion" type="button" data-close-user-auth>Cerrar</button>
+                </div>
+            </div>
+
+            <form id="user-login-form" class="formulario">
+                <div class="campo">
+                    <label for="login-username">Nombre de usuario</label>
+                    <input id="login-username" name="username" type="text" autocomplete="username" placeholder="Tu usuario">
+                </div>
+
+                <div class="campo">
+                    <label for="login-password">Contrasena</label>
+                    <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Tu contrasena">
+                </div>
+
+                <div class="fila-botones">
+                    <button class="boton-accion" type="submit">Entrar</button>
+                    <button class="boton-secundario-linea" type="button" data-close-user-auth>Cerrar</button>
+                </div>
+            </form>
+
+            <form id="user-register-form" class="formulario oculto">
+                <div class="campo">
+                    <label for="register-username">Nombre de usuario</label>
+                    <input id="register-username" name="username" type="text" autocomplete="username" placeholder="Ejemplo: galaxia23">
+                </div>
+
+                <div class="campo">
+                    <label for="register-full-name">Nombre completo</label>
+                    <input id="register-full-name" name="fullName" type="text" autocomplete="name" placeholder="Tu nombre completo">
+                </div>
+
+                <div class="campo">
+                    <label for="register-password">Contrasena</label>
+                    <input id="register-password" name="password" type="password" autocomplete="new-password" placeholder="Crea una contrasena">
+                </div>
+
+                <div class="fila-botones">
+                    <button class="boton-accion" type="submit">Crear cuenta</button>
+                    <button class="boton-secundario-linea" type="button" data-close-user-auth>Cerrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="space-decor" aria-hidden="true">
+        <span class="space-planet planeta-uno"></span>
+        <span class="space-planet planeta-dos"></span>
+        <span class="space-planet planeta-tres"></span>
+        <span class="space-orbit"></span>
+    </div>
+
+    <div class="site-shell">
+        <header class="cabecera">
+            <div class="barra-superior animar">
+                <div class="marca marca-con-logo">
+                    <img class="logo-planeta" src="logo-planeta-rebelde.svg" alt="Logo de Planeta rebelde">
+                    <div>
+                        <h1>Planeta rebelde</h1>
+                        <p>Asociacion creativa para compartir, aprender, mirar al cielo y construir comunidad.</p>
+                    </div>
+                </div>
+                <div class="top-actions">
+                    <button id="user-auth-button" class="boton-admin" type="button">Cuenta</button>
+                    <a class="boton-admin" href="admin.html">Panel admin</a>
+                </div>
+            </div>
+
+            <nav id="menu" class="animar">
+                <a class="activo" href="index.html">Inicio</a>
+                <a href="museo.html">Museo</a>
+                <a href="eventos.html">Eventos</a>
+                <a href="noticias.html">Noticias</a>
+                <a href="juegos.html">Juegos</a>
+                <a href="aprende.html">Aprende</a>
+                <a href="sobre-nosotros.html">Sobre nosotros</a>
+                <a href="redes-sociales.html">Redes sociales</a>
+            </nav>
+        </header>
+
+        <main class="contenido">
+            <section class="hero hero-expandida">
+                <article class="panel hero-principal animar">
+                    <span class="etiqueta">Bienvenida</span>
+                    <h2 id="visitor-greeting">Bienvenidos a nuestra asociacion Planeta rebelde.</h2>
+                    <p id="visitor-summary">Hemos preparado este espacio para reunir noticias, juegos, aprendizaje, fondos dinamicos y contenido creativo en un solo lugar.</p>
+                    <div class="botones-hero">
+                        <a class="boton-principal" href="museo.html">Ir al museo</a>
+                        <a class="boton-secundario" href="eventos.html">Ir a eventos</a>
+                    </div>
+                    <div class="hero-extra-info">
+                        <div class="hero-kpi">
+                            <strong id="new-year-countdown">Cargando...</strong>
+                            <span>Cuenta atras para anio nuevo</span>
+                        </div>
+                        <div class="hero-kpi">
+                            <strong id="user-session-label">Invitado</strong>
+                            <span>Estado de la cuenta actual</span>
+                        </div>
+                    </div>
+                </article>
+
+                <aside class="panel mini-estadisticas animar">
+                    <div class="dato">
+                        <strong>3D</strong>
+                        <span>Museo propio para subir y ver modelos 3D interactivos desde el panel admin.</span>
+                    </div>
+                    <div class="dato">
+                        <strong>Live</strong>
+                        <span>Imagen diaria, novedades y comunidad conectadas a Supabase.</span>
+                    </div>
+                    <div class="dato">
+                        <strong>Nuevas</strong>
+                        <span>Secciones propias de Museo y Eventos, sonidos, animaciones y personalizacion ampliada.</span>
+                    </div>
+                </aside>
+            </section>
+
+            <section class="seccion">
+                <div class="seccion-titulo animar">
+                    <h2>Acceso de administracion</h2>
+                    <p>El login ya no usa contrasenas dentro del JavaScript. Desde aqui se inicia sesion con Supabase y luego se entra al panel protegido.</p>
+                </div>
+
+                <div class="admin-access-grid">
+                    <article id="home-access-card" class="panel animar">
+                        <span class="etiqueta">Supabase Auth</span>
+                        <h3>Entrar como administrador</h3>
+                        <p class="ayuda-admin">Solo las cuentas admin autorizadas pueden entrar al panel con su cuenta de Supabase.</p>
+
+                        <div id="home-auth-status" class="estado ok">Accede con tu email y contrasena de Supabase.</div>
+
+                        <form id="home-login-form" class="formulario">
+                            <div class="campo">
+                                <label for="home-admin-email">Email</label>
+                                <input id="home-admin-email" name="email" type="email" autocomplete="email" placeholder="admin@planetarebelde.com">
+                            </div>
+
+                            <div class="campo">
+                                <label for="home-admin-password">Contrasena</label>
+                                <input id="home-admin-password" name="password" type="password" autocomplete="current-password" placeholder="Tu contrasena de Supabase">
+                            </div>
+
+                            <div class="fila-botones">
+                                <button class="boton-accion" type="submit">Iniciar sesion</button>
+                            </div>
+                        </form>
+                    </article>
+
+                    <article id="home-authenticated" class="panel animar oculto">
+                        <span class="etiqueta">Sesion activa</span>
+                        <h3>Acceso validado</h3>
+                        <p class="ayuda-admin">Tu navegador ya tiene una sesion abierta con Supabase.</p>
+                        <p class="meta" id="home-auth-email"></p>
+                        <div class="fila-botones">
+                            <a id="go-admin-button" class="boton-accion" href="admin.html">Entrar al panel</a>
+                            <button id="home-logout-button" class="boton-secundario-linea" type="button">Cerrar sesion</button>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="seccion">
+                <div class="seccion-titulo animar">
+                    <h2>Que puedes encontrar aqui</h2>
+                    <p>La portada presenta la asociacion y sirve de punto de entrada a todas las areas de la web.</p>
+                </div>
+
+                <div class="grid-destacados">
+                    <article class="tarjeta animar">
+                        <span class="etiqueta">Museo</span>
+                        <h3>Modelos 3D del espacio</h3>
+                        <p>Abre la nueva seccion Museo para ver planetas y modelos 3D subidos por el equipo.</p>
+                    </article>
+
+                    <article class="tarjeta animar">
+                        <span class="etiqueta">Eventos</span>
+                        <h3>Agenda del proyecto</h3>
+                        <p>La seccion Eventos queda lista para anuncios, quedadas, observaciones y actividades del grupo.</p>
+                    </article>
+
+                    <article class="tarjeta animar">
+                        <span class="etiqueta">Noticias</span>
+                        <h3>Novedades del proyecto</h3>
+                        <p>Comparte anuncios, eventos, avances y mensajes importantes con toda la comunidad.</p>
+                    </article>
+
+                    <article class="tarjeta animar">
+                        <span class="etiqueta">Juegos</span>
+                        <h3>Espacio divertido</h3>
+                        <p>Ahora con juegos reparados, mejor feedback y una estetica mas espacial.</p>
+                    </article>
+
+                    <article class="tarjeta animar">
+                        <span class="etiqueta">Aprende</span>
+                        <h3>Contenido util</h3>
+                        <p>Publica guias, ideas, curiosidades y recursos para aprender juntos dentro de la asociacion.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="seccion">
+                <div class="seccion-titulo animar">
+                    <h2>Cuenta atras para año nuevo</h2>
+                    <p>Un contador en directo para seguir el tiempo que falta hasta el 1 de enero.</p>
+                </div>
+
+                <article class="panel animar">
+                    <span class="etiqueta">Directo</span>
+                    <h3>Camino a <span id="countdown-target-year">2027</span></h3>
+                    <p>Se actualiza automaticamente con dias, horas, minutos y segundos para recibir el nuevo año.</p>
+                    <div id="countdown-widget" aria-live="polite">Cargando cuenta atras...</div>
+                </article>
+            </section>
+
+            <section class="seccion">
+                <div class="seccion-titulo animar">
+                    <h2>Publicaciones del equipo</h2>
+                    <p>Todo lo que publiquen los administradores en la seccion de inicio aparecera aqui automaticamente.</p>
+                </div>
+
+                <div class="publicaciones-grid" data-render-content="inicio"></div>
+            </section>
+
+            <section class="seccion">
+                <div class="seccion-titulo animar">
+                    <h2>Comunidad</h2>
+                    <p>Comenta, deja me gusta y participa. Los comentarios se moderan automaticamente y el equipo puede revisarlos desde el panel admin.</p>
+                </div>
+
+                <article class="panel animar community-panel">
+                    <div id="community-auth-summary" class="estado ok">Puedes leer todo como invitado. Para comentar o dar me gusta necesitas entrar con tu cuenta.</div>
+
+                    <form id="comment-form" class="formulario">
+                        <div class="campo">
+                            <label for="comment-message">Tu comentario</label>
+                            <textarea id="comment-message" name="message" placeholder="Escribe algo sobre la web, el cielo o la asociacion"></textarea>
+                        </div>
+
+                        <div class="fila-botones">
+                            <button class="boton-accion" type="submit">Publicar comentario</button>
+                            <button id="community-login-button" class="boton-secundario-linea" type="button">Entrar con mi cuenta</button>
+                        </div>
+                    </form>
+
+                    <div id="community-feed" class="community-feed"></div>
+                </article>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

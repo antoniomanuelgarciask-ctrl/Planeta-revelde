@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventos | Planeta rebelde</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js" defer></script>
+</head>
+<body id="inicio" data-page="eventos">
+    <div class="site-shell">
+        <header class="cabecera">
+            <div class="barra-superior animar">
+                <div class="marca marca-con-logo">
+                    <img class="logo-planeta" src="logo-planeta-rebelde.svg" alt="Logo de Planeta rebelde">
+                    <div>
+                        <h1>Eventos</h1>
+                        <p>Una seccion propia para anunciar actividades, observaciones y todo lo que vaya llegando.</p>
+                    </div>
+                </div>
+                <a class="boton-admin" href="admin.html">Panel admin</a>
+            </div>
+
+            <nav id="menu" class="animar">
+                <a href="index.html">Inicio</a>
+                <a href="museo.html">Museo</a>
+                <a class="activo" href="eventos.html">Eventos</a>
+                <a href="noticias.html">Noticias</a>
+                <a href="juegos.html">Juegos</a>
+                <a href="aprende.html">Aprende</a>
+                <a href="sobre-nosotros.html">Sobre nosotros</a>
+                <a href="redes-sociales.html">Redes sociales</a>
+            </nav>
+        </header>
+
+        <main class="contenido">
+            <section class="panel animar">
+                <span class="etiqueta">Agenda</span>
+                <h2>Proximos eventos del proyecto</h2>
+                <p class="texto-apoyo">Esta pagina ya no muestra eventos astronomicos fijos. A partir de ahora, todo lo que salga aqui lo publicareis vosotros desde el panel admin en la seccion <strong>Eventos</strong>.</p>
+            </section>
+
+            <section class="seccion">
+                <div class="publicaciones-grid" data-render-content="eventos"></div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

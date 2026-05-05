@@ -1,0 +1,24 @@
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="planetGradient" x1="36" y1="34" x2="188" y2="210" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFD36A"/>
+      <stop offset="0.52" stop-color="#FF7B59"/>
+      <stop offset="1" stop-color="#2A6AF5"/>
+    </linearGradient>
+    <linearGradient id="ringGradient" x1="20" y1="120" x2="220" y2="120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6FBFF" stop-opacity="0.2"/>
+      <stop offset="0.45" stop-color="#E6FBFF"/>
+      <stop offset="1" stop-color="#90C6FF" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+  <rect width="240" height="240" rx="64" fill="#0C1426"/>
+  <circle cx="124" cy="120" r="66" fill="url(#planetGradient)"/>
+  <ellipse cx="124" cy="120" rx="103" ry="28" stroke="url(#ringGradient)" stroke-width="16"/>
+  <ellipse cx="124" cy="120" rx="92" ry="18" stroke="#0C1426" stroke-opacity="0.55" stroke-width="8"/>
+  <circle cx="82" cy="82" r="11" fill="#FFF2BA"/>
+  <circle cx="156" cy="98" r="9" fill="#FFFFFF" fill-opacity="0.42"/>
+  <path d="M75 172C95.1417 154.246 129.337 151.614 160 167" stroke="#FFFFFF" stroke-opacity="0.28" stroke-width="10" stroke-linecap="round"/>
+  <path d="M54 48L59 61L72 66L59 71L54 84L49 71L36 66L49 61L54 48Z" fill="#F9F7FF"/>
+  <path d="M184 44L187.5 53.5L197 57L187.5 60.5L184 70L180.5 60.5L171 57L180.5 53.5L184 44Z" fill="#8BE3FF"/>
+  <path d="M191 154L194 162L202 165L194 168L191 176L188 168L180 165L188 162L191 154Z" fill="#FFE183"/>
+</svg>

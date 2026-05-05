@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel admin | Planeta rebelde</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js" defer></script>
+</head>
+<body id="inicio" data-page="admin" class="auth-pending">
+    <div class="site-shell">
+        <header class="cabecera">
+            <div class="barra-superior animar">
+                <div class="marca">
+                    <h1>Panel admin</h1>
+                    <p>Zona interna para publicar contenido en la web. Version 1.3.</p>
+                </div>
+                <a class="boton-admin" href="index.html">Volver al inicio</a>
+            </div>
+            <nav id="menu" class="animar">
+                <a href="index.html">Inicio</a>
+                <a href="noticias.html">Noticias</a>
+                <a href="juegos.html">Juegos</a>
+                <a href="aprende.html">Aprende</a>
+                <a href="sobre-nosotros.html">Sobre nosotros</a>
+                <a href="redes-sociales.html">Redes sociales</a>
+            </nav>
+        </header>
+
+        <main class="contenido">
+            <section class="admin-layout">
+
+                <div class="admin-paneles">
+                    <article class="panel animar">
+                        <span class="etiqueta">Sesion activa</span>
+                        <h2>Hola, <span id="session-name">admin</span></h2>
+                        <p class="ayuda-admin">Si la sesion no existe o la cuenta no pertenece a un admin autorizado, esta pagina te redirige automaticamente a <code>index.html</code>.</p>
+                        <p id="session-email" class="meta"></p>
+                        <div class="fila-botones">
+                            <button id="logout-button" class="boton-secundario-linea" type="button">Cerrar sesion</button>
+                        </div>
+                    </article>
+
+                    <article class="panel animar bigbang-admin-card">
+                        <span class="etiqueta bigbang-etiqueta">Solo admins</span>
+                        <h2>🌌 Big Bang</h2>
+                        <p class="ayuda-admin">Al pulsar este boton, la proxima vez que cualquier usuario entre a la web le saldra una animacion de explosion cosmica. Solo se muestra una vez por activacion.</p>
+                        <div id="bigbang-status" class="estado ok">Listo para activar.</div>
+                        <div class="fila-botones" style="margin-top:12px">
+                            <button id="bigbang-trigger-btn" class="boton-bigbang" type="button">💥 Activar Big Bang</button>
+                        </div>
+                    </article>
+
+                    <article class="panel animar">
+                        <span class="etiqueta">Acciones</span>
+                        <h2>Que quieres hacer?</h2>
+                        <p class="ayuda-admin">Elige una opcion para abrir el panel correspondiente.</p>
+                        <div class="admin-action-buttons">
+                            <button class="admin-action-btn" type="button" data-open-panel="publicar">
+                                <span class="admin-action-icon">📢</span>
+                                <span class="admin-action-label">Publicar contenido</span>
+                                <small>Textos, fotos, videos o enlaces en cualquier seccion</small>
+                            </button>
+                            <button class="admin-action-btn" type="button" data-open-panel="imagenes">
+                                <span class="admin-action-icon">🖼️</span>
+                                <span class="admin-action-label">Imagenes diarias</span>
+                                <small>Fotos de fondo que cambian automaticamente cada dia</small>
+                            </button>
+                            <button class="admin-action-btn" type="button" data-open-panel="novedades">
+                                <span class="admin-action-icon">🚀</span>
+                                <span class="admin-action-label">Publicar novedades</span>
+                                <small>Anuncia una nueva version con su lista de cambios</small>
+                            </button>
+                            <button class="admin-action-btn" type="button" data-open-panel="usuarios">
+                                <span class="admin-action-icon">👥</span>
+                                <span class="admin-action-label">Gestionar usuarios</span>
+                                <small>Ver usuarios registrados, sus comentarios y banearlos</small>
+                            </button>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="admin-panel-content">
+
+                    <div id="admin-status" class="estado ok animar">Comprobando sesion...</div>
+
+                    <div id="admin-empty-state" class="panel animar">
+                        <span class="etiqueta">Ayuda</span>
+                        <h2>Elige una opcion</h2>
+                        <p class="ayuda-admin">Usa los botones de la izquierda para abrir el panel que necesites. Puedes publicar contenido en cualquier seccion, gestionar las imagenes de fondo diarias o anunciar novedades de la version.</p>
+                    </div>
+
+                    <section id="panel-publicar" class="panel animar admin-subpanel oculto">
+                        <div class="admin-subpanel-header">
+                            <div>
+                                <span class="etiqueta">Publicar</span>
+                                <h2>Crear contenido nuevo</h2>
+                                <p class="ayuda-admin">Completa los campos y guarda la publicacion.</p>
+                            </div>
+                            <button class="boton-secundario-linea" type="button" data-close-panel>✕ Cerrar</button>
+                        </div>
+
+                        <form id="publish-form" class="formulario">
+                            <div class="campo">
+                                <label for="content-section">Seccion</label>
+                                <select id="content-section" name="section">
+                                    <option value="inicio">Inicio</option>
+                                    <option value="museo">Museo</option>
+                                    <option value="eventos">Eventos</option>
+                                    <option value="noticias">Noticias</option>
+                                    <option value="juegos">Juegos</option>
+                                    <option value="aprende">Aprende</option>
+                                    <option value="sobre-nosotros">Sobre nosotros</option>
+                                    <option value="redes-sociales">Redes sociales</option>
+                                </select>
+                            </div>
+                            <div class="campo">
+                                <label for="content-type">Tipo de contenido</label>
+                                <select id="content-type" name="type">
+                                    <option value="texto">Texto</option>
+                                    <option value="video">Video</option>
+                                    <option value="foto">Foto</option>
+                                    <option value="enlace">Enlace</option>
+                                    <option value="modelo3d">Modelo 3D</option>
+                                </select>
+                            </div>
+                            <div class="campo">
+                                <label for="content-title">Titulo</label>
+                                <input id="content-title" name="title" type="text" placeholder="Escribe un titulo claro">
+                            </div>
+                            <div class="campo">
+                                <label for="content-description">Descripcion</label>
+                                <textarea id="content-description" name="description" placeholder="Escribe el texto que quieres mostrar"></textarea>
+                            </div>
+                            <div id="media-field" class="campo">
+                                <label for="content-media-url">URL del video</label>
+                                <input id="content-media-url" name="mediaUrl" type="url" placeholder="https://...">
+                            </div>
+                            <div id="file-field" class="campo">
+                                <label for="content-media-file">Archivo desde tu ordenador</label>
+                                <input id="content-media-file" name="mediaFile" type="file" accept="video/*">
+                                <p class="upload-note">Puedes usar una URL o subir un archivo. Los archivos se suben a Supabase y son visibles para todos.</p>
+                            </div>
+                            <div id="action-field" class="campo">
+                                <label for="content-action-url">URL del boton</label>
+                                <input id="content-action-url" name="actionUrl" type="url" placeholder="https://...">
+                            </div>
+                            <div id="action-label-field" class="campo">
+                                <label for="content-action-label">Texto del boton</label>
+                                <input id="content-action-label" name="actionLabel" type="text" placeholder="Ejemplo: Ver mas">
+                            </div>
+                            <div class="fila-botones">
+                                <button class="boton-accion" type="submit">Publicar ahora</button>
+                            </div>
+                        </form>
+
+                        <div class="seccion" style="margin-top:28px">
+                            <div class="seccion-titulo"><h2>Publicaciones creadas</h2></div>
+                            <div id="admin-items" class="lista-admin"></div>
+                        </div>
+                    </section>
+
+                    <section id="panel-imagenes" class="panel animar admin-subpanel oculto">
+                        <div class="admin-subpanel-header">
+                            <div>
+                                <span class="etiqueta">Imagenes diarias</span>
+                                <h2>Biblioteca de fondo</h2>
+                                <p class="ayuda-admin">Guarda aqui las imagenes de fondo. Si pones una fecha fija saldra ese dia. Si la dejas vacia rotaran automaticamente. Las imagenes se suben a Supabase y las ven todos.</p>
+                            </div>
+                            <button class="boton-secundario-linea" type="button" data-close-panel>✕ Cerrar</button>
+                        </div>
+
+                        <div id="daily-image-status" class="estado ok">Prepara una imagen para la biblioteca diaria.</div>
+
+                        <form id="daily-image-form" class="formulario">
+                            <div class="campo">
+                                <label for="daily-image-title">Titulo</label>
+                                <input id="daily-image-title" name="title" type="text" placeholder="Ejemplo: Portada del dia">
+                            </div>
+                            <div class="campo">
+                                <label for="daily-image-description">Descripcion</label>
+                                <textarea id="daily-image-description" name="description" placeholder="Opcional"></textarea>
+                            </div>
+                            <div class="campo">
+                                <label for="daily-image-date">Fecha fija (opcional)</label>
+                                <input id="daily-image-date" name="date" type="date">
+                            </div>
+                            <div class="campo">
+                                <label for="daily-image-url">URL de la imagen</label>
+                                <input id="daily-image-url" name="mediaUrl" type="url" placeholder="https://...">
+                            </div>
+                            <div class="campo">
+                                <label for="daily-image-file">Imagen desde tu ordenador</label>
+                                <input id="daily-image-file" name="mediaFile" type="file" accept="image/*">
+                                <p class="upload-note">Se sube a Supabase y la veran todos los usuarios.</p>
+                            </div>
+                            <div class="fila-botones">
+                                <button class="boton-accion" type="submit">Guardar imagen diaria</button>
+                            </div>
+                        </form>
+
+                        <div id="daily-image-items" class="lista-admin" style="margin-top:20px"></div>
+                    </section>
+
+                    <section id="panel-novedades" class="panel animar admin-subpanel oculto">
+                        <div class="admin-subpanel-header">
+                            <div>
+                                <span class="etiqueta">Novedades</span>
+                                <h2>Publicar actualizacion</h2>
+                                <p class="ayuda-admin">Cuando publiques, el cartel de novedades se mostrara una sola vez a cada usuario la proxima vez que entre.</p>
+                            </div>
+                            <button class="boton-secundario-linea" type="button" data-close-panel>✕ Cerrar</button>
+                        </div>
+
+                        <div id="novedades-status" class="estado ok">Rellena la version y los cambios para publicar.</div>
+
+                        <form id="novedades-form" class="formulario">
+                            <div class="campo">
+                                <label for="novedades-version">Numero de version</label>
+                                <input id="novedades-version" name="version" type="text" placeholder="Ejemplo: v2">
+                            </div>
+                            <div class="campo">
+                                <label for="novedades-titulo">Titulo de la actualizacion</label>
+                                <input id="novedades-titulo" name="titulo" type="text" placeholder="Ejemplo: Gran actualizacion de verano">
+                            </div>
+                            <div class="campo">
+                                <label for="novedades-descripcion">Descripcion breve</label>
+                                <textarea id="novedades-descripcion" name="descripcion" placeholder="Un resumen de por que es importante esta version"></textarea>
+                            </div>
+                            <div class="campo">
+                                <label for="novedades-changes">Lista de cambios</label>
+                                <textarea id="novedades-changes" name="changes" placeholder="Escribe cada cambio en una linea distinta. Ejemplo:&#10;Nueva seccion de juegos&#10;Imagenes diarias mejoradas&#10;Panel admin renovado"></textarea>
+                            </div>
+                            <div class="fila-botones">
+                                <button class="boton-accion" type="submit">Publicar novedades</button>
+                            </div>
+                        </form>
+
+                        <div id="novedades-items" class="lista-admin" style="margin-top:20px"></div>
+                    </section>
+
+                    <section id="panel-usuarios" class="panel animar admin-subpanel oculto">
+                        <div class="admin-subpanel-header">
+                            <div>
+                                <span class="etiqueta">Usuarios</span>
+                                <h2>Gestionar usuarios</h2>
+                                <p class="ayuda-admin">Lista de todos los usuarios registrados. Puedes ver sus comentarios y banearlos por tiempo o de forma permanente.</p>
+                            </div>
+                            <button class="boton-secundario-linea" type="button" data-close-panel>✕ Cerrar</button>
+                        </div>
+                        <div id="usuarios-status" class="estado ok">Cargando usuarios...</div>
+                        <div id="usuarios-lista" class="lista-admin" style="margin-top:16px;"></div>
+                    </section>
+
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
